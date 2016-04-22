@@ -1,0 +1,117 @@
+root 0
+scene_name bedroom000393
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
+leaf_group 2 4 5 18 19 20 22 23 24 25 26 27 28 30 35 38 39 44 46 47 48 50 52 55 57 59 61 72 87 92 95 96 97 99 102 103 104 106
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 2
+label 5 nightstand
+newModel 2
+parent 0
+children
+leaf_group 22 50 52
+label 32 bed
+newModel 3
+parent 0
+children
+leaf_group 4
+label 2 shelves
+newModel 4
+parent 0
+children
+leaf_group 5
+label 44 book_array
+newModel 5
+parent 0
+children
+leaf_group 26 39
+label 4 closet
+newModel 6
+parent 0
+children
+leaf_group 72
+label 31 door
+newModel 7
+parent 0
+children
+leaf_group 87
+label 31 door
+newModel 8
+parent 0
+children
+leaf_group 95 96 97 99
+label 37 window_set
+newModel 9
+parent 0
+children
+leaf_group 24
+label 52 vase
+newModel 10
+parent 0
+children
+leaf_group 27
+label 52 vase
+newModel 11
+parent 0
+children
+leaf_group 28
+label 44 book_array
+newModel 12
+parent 0
+children
+leaf_group 25 30
+label 36 photo_frame
+newModel 13
+parent 0
+children
+leaf_group 23 38
+label 29 monitor
+newModel 14
+parent 0
+children
+leaf_group 102 103 104 106
+label 37 window_set
+newModel 15
+parent 0
+children
+leaf_group 35
+label 34 curtain
+newModel 16
+parent 0
+children
+leaf_group 18 19 20
+label 65 cabinet
+newModel 17
+parent 0
+children
+leaf_group 92
+label 4 closet
+newModel 18
+parent 0
+children
+leaf_group 44
+label 60 pillow
+newModel 19
+parent 0
+children
+leaf_group 46
+label 60 pillow
+newModel 20
+parent 0
+children
+leaf_group 47
+label 34 curtain
+newModel 21
+parent 0
+children
+leaf_group 48
+label 60 pillow
+newModel 22
+parent 0
+children
+leaf_group 55 57 59 61
+label 58 table_lamp

@@ -1,0 +1,107 @@
+root 0
+scene_name bedroom003234
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+leaf_group 5 6 7 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 59 61 63 65 66 67 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 85 86 87 88 89 90 91 92 93 94 95 96 98 99 100 101 102 103 104 105 106 107 108 109 111 112 113 114 115 116 117 118 119 120 121 122 123 124 128 521 523 525 527 529 531 533 535 537
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 537
+label 32 bed
+newModel 2
+parent 0
+children
+leaf_group 85 86 87 88 89 90 91 92 93 94 95 96 98 99 100 101 102 103 104 105 106 107 108 109 111 112 113 114 115 116 117 118 119 120 121 122 123 124
+label 34 curtain
+newModel 3
+parent 0
+children
+leaf_group 9
+label 5 nightstand
+newModel 4
+parent 0
+children
+leaf_group 10
+label 5 nightstand
+newModel 5
+parent 0
+children
+leaf_group 5 6 7 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55
+label 34 curtain
+newModel 6
+parent 0
+children
+leaf_group 59
+label 60 pillow
+newModel 7
+parent 0
+children
+leaf_group 61
+label 60 pillow
+newModel 8
+parent 0
+children
+leaf_group 63
+label 60 pillow
+newModel 9
+parent 0
+children
+leaf_group 65 66 67
+label 24 couch
+newModel 10
+parent 0
+children
+leaf_group 69 70 71 72 73 74 75 76 77 78 79 80 81 82
+label 34 curtain
+newModel 11
+parent 0
+children
+leaf_group 83
+label 65 cabinet
+newModel 12
+parent 0
+children
+leaf_group 128
+label 56 plant
+newModel 13
+parent 0
+children
+leaf_group 521
+label 50 chair
+newModel 14
+parent 0
+children
+leaf_group 523
+label 49 floor_lamp
+newModel 15
+parent 0
+children
+leaf_group 525
+label 49 floor_lamp
+newModel 16
+parent 0
+children
+leaf_group 527
+label 58 table_lamp
+newModel 17
+parent 0
+children
+leaf_group 529
+label 58 table_lamp
+newModel 18
+parent 0
+children
+leaf_group 531
+label 11 dvd
+newModel 19
+parent 0
+children
+leaf_group 533
+label 6 tv
+newModel 20
+parent 0
+children
+leaf_group 535
+label 64 ceiling_lamp

@@ -1,0 +1,117 @@
+root 0
+scene_name bedroom004461
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22
+leaf_group 4 10 12 13 14 15 18 25 26 28 29 31 32 33 34 36 37 81 105 129 177 201 225 249 273 321 369 393 402 404 405 517 521 522 523 525 526 527 529 530 534 535 538 539 544 547 548 549 551 552 557 574 575 580 582 583 584 591 592 595 596 601 602 605 606 607 609 610 611 614 615 618 619 620 622 623 625 629 630 635 637 638 639 646 647 650 651 657 659 660 661 663 664 668 669 670 672 673 676 677 678 682 683 684 686 687 690 691 692 695 696 701 703 704 705 722 723 724 739 746 750 751 752 753 754 758 762 764 769 771 772 773 792 794 796 798 836
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 4 798
+label 5 nightstand
+newModel 2
+parent 0
+children
+leaf_group 10 746 796
+label 1 console_table
+newModel 3
+parent 0
+children
+leaf_group 12 13 14 15
+label 26 desk
+newModel 4
+parent 0
+children
+leaf_group 18 794
+label 5 nightstand
+newModel 5
+parent 0
+children
+leaf_group 792
+label 65 cabinet
+newModel 6
+parent 0
+children
+leaf_group 25
+label 55 painting
+newModel 7
+parent 0
+children
+leaf_group 26
+label 63 rug
+newModel 8
+parent 0
+children
+leaf_group 836
+label 31 door
+newModel 9
+parent 0
+children
+leaf_group 517 521 522 523 525 526 527 529 530 534 535 538 539 544 547 548 549 551 552 557 574 575 580 582 583 584 591 592 595 596 601 602 605 606 607 609 610 611 614 615 618 619 620 622 623 625 629 630 635 637 638 639 646 647 650 651 657 659 660 661 663 664 668 669 670 672 673 676 677 678 682 683 684 686 687 690 691 692 695 696 701 703 704 705 758
+label 56 plant
+newModel 10
+parent 0
+children
+leaf_group 36 37
+label 62 mattress
+newModel 11
+parent 0
+children
+leaf_group 81 105 129 177 201 225 249 273 321 369 393 402
+label 56 plant
+newModel 12
+parent 0
+children
+leaf_group 404 405
+label 38 book
+newModel 13
+parent 0
+children
+leaf_group 769 771
+label 60 pillow
+newModel 14
+parent 0
+children
+leaf_group 754 772 773
+label 37 window_set
+newModel 15
+parent 0
+children
+leaf_group 722
+label 55 painting
+newModel 16
+parent 0
+children
+leaf_group 723
+label 58 table_lamp
+newModel 17
+parent 0
+children
+leaf_group 724
+label 58 table_lamp
+newModel 18
+parent 0
+children
+leaf_group 753
+label 44 book_array
+newModel 19
+parent 0
+children
+leaf_group 762 764
+label 60 pillow
+newModel 20
+parent 0
+children
+leaf_group 739
+label 55 painting
+newModel 21
+parent 0
+children
+leaf_group 28 29 31 32 33 34
+label 61 bed_frame
+newModel 22
+parent 0
+children
+leaf_group 750 751 752
+label 50 chair

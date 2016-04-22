@@ -1,0 +1,82 @@
+root 0
+scene_name bedroom000290
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+leaf_group 0 3 4 5 6 8 9 10 11 13 19 21 23 25 27 28 30 32 34 36 38 40 44 52 56 60 62
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 6 25 27
+label 32 bed
+newModel 2
+parent 0
+children
+leaf_group 8
+label 55 painting
+newModel 3
+parent 0
+children
+leaf_group 10
+label 22 human
+newModel 4
+parent 0
+children
+leaf_group 11
+label 58 table_lamp
+newModel 5
+parent 0
+children
+leaf_group 30 32 34 36 38 40
+label 5 nightstand
+newModel 6
+parent 0
+children
+leaf_group 19
+label 60 pillow
+newModel 7
+parent 0
+children
+leaf_group 21
+label 60 pillow
+newModel 8
+parent 0
+children
+leaf_group 23
+label 60 pillow
+newModel 9
+parent 0
+children
+leaf_group 28
+label 31 door
+newModel 10
+parent 0
+children
+leaf_group 13 52 56 62
+label 58 table_lamp
+newModel 11
+parent 0
+children
+leaf_group 5
+label 65 cabinet
+newModel 12
+parent 0
+children
+leaf_group 0
+label 41 box
+newModel 13
+parent 0
+children
+leaf_group 3 9 44
+label 5 nightstand
+newModel 14
+parent 0
+children
+leaf_group 60
+label 51 ottoman
+newModel 15
+parent 0
+children
+leaf_group 4
+label 4 closet

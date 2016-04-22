@@ -1,0 +1,62 @@
+root 0
+scene_name bedroom000065
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7 8 9 10 11
+leaf_group 0 5 6 9 10 12 13 14 20 21 25 27 39 78 79 80 81 82 83 85 119 151
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 5 6 9 10
+label 5 nightstand
+newModel 2
+parent 0
+children
+leaf_group 13
+label 58 table_lamp
+newModel 3
+parent 0
+children
+leaf_group 20
+label 51 ottoman
+newModel 4
+parent 0
+children
+leaf_group 80
+label 60 pillow
+newModel 5
+parent 0
+children
+leaf_group 81
+label 60 pillow
+newModel 6
+parent 0
+children
+leaf_group 82
+label 62 mattress
+newModel 7
+parent 0
+children
+leaf_group 0 25
+label 36 photo_frame
+newModel 8
+parent 0
+children
+leaf_group 21 85
+label 44 book_array
+newModel 9
+parent 0
+children
+leaf_group 27 39 119 151
+label 56 plant
+newModel 10
+parent 0
+children
+leaf_group 12 14
+label 5 nightstand
+newModel 11
+parent 0
+children
+leaf_group 78 79 83
+label 61 bed_frame

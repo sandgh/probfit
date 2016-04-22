@@ -1,0 +1,42 @@
+root 0
+scene_name bedroom000190
+newModel 0
+parent -1
+children 1 2 3 4 5 6 7
+leaf_group 0 5 6 7 8 9 10 11 13 15 17 19 21 22 30 52
+label 0 bedroom
+newModel 1
+parent 0
+children
+leaf_group 5 6 11
+label 32 bed
+newModel 2
+parent 0
+children
+leaf_group 22
+label 37 window_set
+newModel 3
+parent 0
+children
+leaf_group 0 13 15 17 19 21
+label 18 ceiling_fan
+newModel 4
+parent 0
+children
+leaf_group 30
+label 60 pillow
+newModel 5
+parent 0
+children
+leaf_group 10
+label 65 cabinet
+newModel 6
+parent 0
+children
+leaf_group 9 52
+label 49 floor_lamp
+newModel 7
+parent 0
+children
+leaf_group 7 8
+label 50 chair
