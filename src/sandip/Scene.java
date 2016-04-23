@@ -21,14 +21,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+class BBox{
+	
+	double x_min,y_min,z_min,x_max,y_max,z_max;
+	
+	public BBox(double x_min, double y_min, double z_min, double x_max,
+			double y_max, double z_max) {
+		super();
+		this.x_min = x_min;
+		this.y_min = y_min;
+		this.z_min = z_min;
+		this.x_max = x_max;
+		this.y_max = y_max;
+		this.z_max = z_max;
+	}
+
+	List<Double> getBBoxCenter(){
+		
+		List<Double> bbox_cent = new ArrayList<>();
+		bbox_cent.add((x_min+x_max)/2);
+		bbox_cent.add((y_min+y_max)/2);
+		bbox_cent.add((z_min+z_max)/2);
+		
+		return bbox_cent;
+	}
+	
+}
+
 class Node{
 	int scene_index;
 //	int global_index;
 	int ground_truth_label;
     String ground_truth_label_name;
-	List<Double> features = new ArrayList<>();
+	
+    List<Double> features = new ArrayList<>();
+	
 	Map<Integer,Double> distances = new HashMap<>();
+	Map<Integer,Double> normalize_distances = new HashMap<>();
+	
+	BBox node_bbox;
+	
+	List<TreeNode> children = new ArrayList<>();
+	
 }
+
 
 public class Scene {
 	Map<Integer, Node> leaf_nodes = new HashMap<>();
@@ -93,6 +129,13 @@ public class Scene {
 				}
 			}
 			
+			else if(rd_str.startsWith("proxy_box")){
+				String[] splt_str = rd_str.split(" ");
+				curr_node.node_bbox = new BBox(Double.parseDouble(splt_str[1]), Double.parseDouble(splt_str[2]), 
+						Double.parseDouble(splt_str[3]), Double.parseDouble(splt_str[4]), 
+						Double.parseDouble(splt_str[5]), Double.parseDouble(splt_str[6]));
+			}
+			
 		}
 
 		if(curr_node!=null)	leaf_nodes.put(curr_node.scene_index, curr_node);
@@ -137,5 +180,22 @@ public class Scene {
 		}
 		
 		br.close();
+	}
+	
+	public void buildSceneTree()
+	{
+		
+		
+		
+	}
+	
+	private void mergeLeaves()
+	{
+		
+	}
+	
+	private void mergeInternalNodes()
+	{
+		
 	}
 }

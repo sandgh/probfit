@@ -48,6 +48,8 @@ public class SandipGrammarInduction {
 				//match(tree_i, tree_j)
 
 		// parseKMeansResult();
+		
+		System.out.println();
 
 	}
 	

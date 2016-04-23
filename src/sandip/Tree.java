@@ -13,6 +13,7 @@
 package sandip;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,10 +113,18 @@ public class Tree {
 		t.addAllNodesToUnmappedList();
 		
 		//no need to match the roots (assumption both are bedroom scenes)
-		this.unmapped_list.remove((Object)root.node_index);
-		t.unmapped_list.remove((Object)t.root.node_index);
+//		this.unmapped_list.remove((Object)root.node_index);
+//		t.unmapped_list.remove((Object)t.root.node_index);
+//		compareNodesv2(this, t, match);
 		
-		compareNodesv2(this, t, match);
+		
+//		this.unmapped_list.remove((Object)root.node_index);
+//		t.unmapped_list.remove((Object)t.root.node_index);		
+//		mapped_map.put(root.node_index, t.root.node_index);
+//		t.mapped_map.put(t.root.node_index, this.root.node_index);
+//		compareNodesTopDown(this, t, match);
+		
+		compareNodesBottomUp(this, t, match);
 		
 		for (String str : match.keySet()) {
 			System.out.println(str + " --> " + match.get(str));
@@ -206,6 +215,154 @@ public class Tree {
 					t2.addToMappedList(v2, no_match?-1:v1);
 					
 					compareNodesv2(t1,t2,match_map);
+					t1.removeFromMappedList(v1,i);
+					t2.removeFromMappedList(v2,j);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @param match_map
+	 */
+	private void compareNodesTopDown(Tree t1, Tree t2, Map<String, String> match_map){
+		
+		//base condition
+		/** @todo - if one of the tree is completely mapped 
+		 *  then the remaining nodes of the other will remain unmapped
+		**/
+		if(t1.unmapped_list.isEmpty() && t2.unmapped_list.isEmpty()){
+			
+			StringBuffer sb = new StringBuffer();
+			
+			for (int i : t1.mapped_map.keySet()) {
+				sb.append(i+"->"+t1.mapped_map.get(i) + ", ");
+			}
+			match_map.put(sb.toString(), computeMatchScore());
+		}
+		
+		
+		for (int i=0;i<t1.unmapped_list.size(); i++) {
+			for (int j=0;j<t2.unmapped_list.size(); j++) {
+				
+				int v1 = t1.unmapped_list.get(i);
+				int v2 = t2.unmapped_list.get(j);
+				boolean no_match = false;
+				
+				//matched only nodes that are children of the mapped parents
+				if( mapped_map.containsKey(t1.node_map.get(v1).parent)
+						&& t2.mapped_map.containsKey(t2.node_map.get(v2).parent)) 
+				{
+						
+					if(!(mapped_map.get(t1.node_map.get(v1).parent) == t2.node_map.get(v2).parent))
+						no_match = true;
+
+					t1.addToMappedList(v1, no_match?-1:v2);
+					t2.addToMappedList(v2, no_match?-1:v1);
+					
+					compareNodesTopDown(t1,t2,match_map);
+					
+					t1.removeFromMappedList(v1,i);
+					t2.removeFromMappedList(v2,j);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @param match_map
+	 */
+	private void compareNodesBottomUp(Tree t1, Tree t2, Map<String, String> match_map){
+		
+		//base condition
+		/** @todo - if one of the tree is completely mapped 
+		 *  then the remaining nodes of the other will remain unmapped
+		**/
+		if(t1.unmapped_list.isEmpty() && t2.unmapped_list.isEmpty()){
+			
+			StringBuffer sb = new StringBuffer();
+			
+			for (int i : t1.mapped_map.keySet()) {
+				sb.append(i+"->"+t1.mapped_map.get(i) + ", ");
+			}
+			match_map.put(sb.toString(), computeMatchScore());
+		}
+		
+		
+		for (int i=0;i<t1.unmapped_list.size(); i++) {
+			
+			int v1 = t1.unmapped_list.get(i);
+			boolean is_chld_mapped1 = false;
+			
+			//if no children mapped yet, continue
+			for (TreeNode chld1 : t1.node_map.get(v1).children) {
+				if(mapped_map.containsKey(chld1.node_index)){
+					is_chld_mapped1 = true;
+					break;
+				}
+			}
+			
+			if(!is_chld_mapped1 && !t1.node_map.get(v1).is_leaf)		continue;	
+			
+			
+			for (int j=0;j<t2.unmapped_list.size(); j++) {
+				
+				
+				int v2 = t2.unmapped_list.get(j);
+				boolean is_chld_mapped2 = false;
+				
+				//if no children mapped yet, continue
+				for (TreeNode chld1 : t1.node_map.get(v1).children) {
+					if(mapped_map.containsKey(chld1.node_index)){
+						is_chld_mapped2 = true;
+						break;
+					}
+				}
+				
+				if(!is_chld_mapped2 && !t2.node_map.get(v2).is_leaf)		continue;
+				
+				
+				boolean is_chld_match = false;
+				
+				if(t1.node_map.get(v1).is_leaf && t2.node_map.get(v2).is_leaf)
+//						&& Math.abs(t1.node_map.get(v1).node_val-t2.node_map.get(v2).node_val) > 2)
+				{
+					t1.addToMappedList(v1, v2);
+					t2.addToMappedList(v2, v1);
+					
+					compareNodesBottomUp(t1,t2,match_map);
+					
+					t1.removeFromMappedList(v1,i);
+					t2.removeFromMappedList(v2,j);
+				}
+				
+				//matched only nodes that are in the same depth
+				else 
+				{
+						
+					for (TreeNode chld1 : t1.node_map.get(v1).children) {
+						for (TreeNode chld2 : t2.node_map.get(v2).children) {
+							if(mapped_map.containsKey(chld1.node_index) 
+									&& mapped_map.get(chld1.node_index) == chld2.node_index)
+							{
+								is_chld_match = true;
+								break;
+							}
+						}
+						if(is_chld_match)	break;
+					}
+					
+					t1.addToMappedList(v1, is_chld_match?v2:-1);
+					t2.addToMappedList(v2, is_chld_match?v2:-1);
+					
+					compareNodesBottomUp(t1,t2,match_map);
+					
 					t1.removeFromMappedList(v1,i);
 					t2.removeFromMappedList(v2,j);
 				}
