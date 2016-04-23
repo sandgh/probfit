@@ -83,9 +83,13 @@ public class SandipGrammarInduction {
 				scenes.add(s1);
 //				scenes_map.put(s1.name, s1);
 				
+				
+				s1.buildSceneTree();
+				System.out.println("----------------------------------------------------------------------------");
+//				System.out.println(s1);
 			}
 
-		 System.out.println("Reading files done...");
+//		 System.out.println("Reading files done...");
 		 
 		 return scenes;
 	}
