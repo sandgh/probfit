@@ -19,75 +19,63 @@ import java.util.List;
 import java.util.Map;
 
 
-class TreeNode{
+class BBox{
 	
-	int node_index;
-	String node_label;
-	int node_val;
-	boolean is_leaf = false;
-	int node_depth;
-	List<TreeNode> children = new ArrayList<>();
-	int parent;
+	double x_min,y_min,z_min,x_max,y_max,z_max;
+	
+	public BBox(double x_min, double y_min, double z_min, double x_max,
+			double y_max, double z_max) {
+		super();
+		this.x_min = x_min;
+		this.y_min = y_min;
+		this.z_min = z_min;
+		this.x_max = x_max;
+		this.y_max = y_max;
+		this.z_max = z_max;
+	}
+
+	List<Double> getBBoxCenter(){
+		
+		List<Double> bbox_cent = new ArrayList<>();
+		bbox_cent.add((x_min+x_max)/2);
+		bbox_cent.add((y_min+y_max)/2);
+		bbox_cent.add((z_min+z_max)/2);
+		
+		return bbox_cent;
+	}
 	
 }
 
-public class Tree {
+class SceneNode{
+	int node_index;
+	int ground_truth_label;
+    String ground_truth_label_name;
+	
+    int parent;
+    boolean is_leaf = false;
+    
+    List<Double> features = new ArrayList<>();
+	
+	Map<Integer,Double> distances = new HashMap<>();
+	Map<Integer,Double> normalize_distances = new HashMap<>();
+	
+	BBox node_bbox;
+	
+	List<SceneNode> children = new ArrayList<>();
+}
 
-	TreeNode root = null;
+
+public class SceneTree {
+
+	SceneNode root = null;
 	
 	//format <node_id, node> - mapped node_index->node
-	Map<Integer, TreeNode> node_map = new HashMap<>();
+	Map<Integer, SceneNode> node_map = new HashMap<>();
 	
 	//these two lists contains the mapped and unmapped nodes while matching 2 trees
 	List<Integer> unmapped_list = new ArrayList<>();
 	Map<Integer, Integer> mapped_map = new HashMap<>();
 	
-	/**
-	 * Loads the tree from a given string (this can be constructor also)
-	 * @param treeStr - Tree i/p format - <node_index,node_val,parent_node_index>;<node_index,node_val,parent_node_index>; ... 
-	 * @return - root node of the tree (not in use for now)
-	 */
-	public TreeNode loadTree(String treeStr)
-	{
-		//splits each node data
-		String nodes[] = treeStr.split(";");
-		int node_index = 0;
-		
-		//for each node
-		for (String str : nodes){
-			
-			String[] node_str = str.trim().split(",");
-
-			//create a new node
-			TreeNode tn = new TreeNode();
-			
-			tn.node_index = node_index++;
-			tn.node_val = Integer.parseInt(node_str[0]);
-			tn.parent = Integer.parseInt(node_str[1]);
-		
-			//not the root
-			if(tn.parent != -1){
-				TreeNode p = node_map.get(tn.parent);
-				tn.node_depth = p.node_depth+1;
-				p.children.add(tn);
-			}
-			else{
-				tn.node_depth=0;
-				root = tn;
-			}
-			
-			node_map.put(tn.node_index, tn);
-		}
-		
-		for (int i : node_map.keySet()) {
-			
-			TreeNode t1 = node_map.get(i);
-			
-			if(t1.children.size() == 0 )	t1.is_leaf=true;
-		}
-		
-		return root;
-	}
 	
 	/**
 	 * This will be called before we start matching two trees
@@ -105,17 +93,12 @@ public class Tree {
 	 * @param t
 	 * @return
 	 */
-	public Map<String, Integer> compareTree(Tree t){
+	public Map<String, Integer> compareTree(SceneTree t){
 
 		Map<String, String> match = new HashMap<>(); 
 		
 		addAllNodesToUnmappedList();
 		t.addAllNodesToUnmappedList();
-		
-		//no need to match the roots (assumption both are bedroom scenes)
-//		this.unmapped_list.remove((Object)root.node_index);
-//		t.unmapped_list.remove((Object)t.root.node_index);
-//		compareNodesv2(this, t, match);
 		
 		
 		this.unmapped_list.remove((Object)root.node_index);
@@ -178,7 +161,7 @@ public class Tree {
 	 * @param t2
 	 * @param match_map
 	 */
-	private void compareNodesv2(Tree t1, Tree t2, Map<String, String> match_map){
+	private void compareNodesTopDown(SceneTree t1, SceneTree t2, Map<String, String> match_map){
 		
 		//base condition
 		/** @todo - if one of the tree is completely mapped 
@@ -192,71 +175,31 @@ public class Tree {
 				sb.append(i+"->"+t1.mapped_map.get(i) + ", ");
 			}
 			match_map.put(sb.toString(), computeMatchScore());
-		}
-		
-		
-		for (int i=0;i<t1.unmapped_list.size(); i++) {
-			for (int j=0;j<t2.unmapped_list.size(); j++) {
-				
-				int v1 = t1.unmapped_list.get(i);
-				int v2 = t2.unmapped_list.get(j);
-				boolean no_match = false;
-				
-				//matched only nodes that are in the same depth
-				if((t1.node_map.get(v1).node_depth == t2.node_map.get(v2).node_depth) ){
-					
-					//test cond - if leaves are too far skip matching
-					if(t1.node_map.get(v1).is_leaf && t2.node_map.get(v2).is_leaf 
-							&& Math.abs(t1.node_map.get(v1).node_val-t2.node_map.get(v2).node_val) > 2)
-						no_match = true;
-						
-					
-					t1.addToMappedList(v1, no_match?-1:v2);
-					t2.addToMappedList(v2, no_match?-1:v1);
-					
-					compareNodesv2(t1,t2,match_map);
-					t1.removeFromMappedList(v1,i);
-					t2.removeFromMappedList(v2,j);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * 
-	 * @param t1
-	 * @param t2
-	 * @param match_map
-	 */
-	private void compareNodesTopDown(Tree t1, Tree t2, Map<String, String> match_map){
-		
-		//base condition
-		/** @todo - if one of the tree is completely mapped 
-		 *  then the remaining nodes of the other will remain unmapped
-		**/
-		if(t1.unmapped_list.isEmpty() && t2.unmapped_list.isEmpty()){
 			
-			StringBuffer sb = new StringBuffer();
-			
+			sb = new StringBuffer();
 			for (int i : t1.mapped_map.keySet()) {
-				sb.append(i+"->"+t1.mapped_map.get(i) + ", ");
+				sb.append(this.node_map.get(i).ground_truth_label_name+"->"+
+							t1.node_map.get(this.mapped_map.get(i)).ground_truth_label_name + ", ");
 			}
-			match_map.put(sb.toString(), computeMatchScore());
+			System.out.println(sb.toString());
 		}
 		
 		
 		for (int i=0;i<t1.unmapped_list.size(); i++) {
+			
+			int v1 = t1.unmapped_list.get(i);
+			if(!mapped_map.containsKey(t1.node_map.get(v1).parent))
+				continue;
+			
 			for (int j=0;j<t2.unmapped_list.size(); j++) {
 				
-				int v1 = t1.unmapped_list.get(i);
 				int v2 = t2.unmapped_list.get(j);
 				boolean no_match = false;
 				
 				//matched only nodes that are children of the mapped parents
-				if( mapped_map.containsKey(t1.node_map.get(v1).parent)
-						&& t2.mapped_map.containsKey(t2.node_map.get(v2).parent)) 
+				if( t2.mapped_map.containsKey(t2.node_map.get(v2).parent)) 
 				{
-						
+						//just for now, as coe is taking time
 					if(!(mapped_map.get(t1.node_map.get(v1).parent) == t2.node_map.get(v2).parent))
 						continue;
 //						no_match = true;
@@ -279,7 +222,7 @@ public class Tree {
 	 * @param t2
 	 * @param match_map
 	 */
-	private void compareNodesBottomUp(Tree t1, Tree t2, Map<String, String> match_map){
+	private void compareNodesBottomUp(SceneTree t1, SceneTree t2, Map<String, String> match_map){
 		
 		//base condition
 		/** @todo - if one of the tree is completely mapped 
@@ -302,7 +245,7 @@ public class Tree {
 			boolean is_chld_mapped1 = false;
 			
 			//if no children mapped yet, continue
-			for (TreeNode chld1 : t1.node_map.get(v1).children) {
+			for (SceneNode chld1 : t1.node_map.get(v1).children) {
 				if(mapped_map.containsKey(chld1.node_index)){
 					is_chld_mapped1 = true;
 					break;
@@ -319,7 +262,7 @@ public class Tree {
 				boolean is_chld_mapped2 = false;
 				
 				//if no children mapped yet, continue
-				for (TreeNode chld1 : t1.node_map.get(v1).children) {
+				for (SceneNode chld1 : t1.node_map.get(v1).children) {
 					if(mapped_map.containsKey(chld1.node_index)){
 						is_chld_mapped2 = true;
 						break;
@@ -347,8 +290,8 @@ public class Tree {
 				else 
 				{
 						
-					for (TreeNode chld1 : t1.node_map.get(v1).children) {
-						for (TreeNode chld2 : t2.node_map.get(v2).children) {
+					for (SceneNode chld1 : t1.node_map.get(v1).children) {
+						for (SceneNode chld2 : t2.node_map.get(v2).children) {
 							if(mapped_map.containsKey(chld1.node_index) 
 									&& mapped_map.get(chld1.node_index) == chld2.node_index)
 							{
@@ -371,25 +314,6 @@ public class Tree {
 		}
 	}
 	
-	@Override
-	public String toString() {
-		printTree(root);
-		return "";
-	}
-	
-	
-	private void printTree(TreeNode tn) {
-		if (tn == null)		return;
-		
-		System.out.print(tn.node_val + "(" + tn.node_depth + ", " + tn.is_leaf + ")   ");
-
-		if (tn.children.size() == 0)	return;
-		
-		for (TreeNode c : tn.children) {
-			printTree(c);
-		}
-
-	}
 	
 	
 }

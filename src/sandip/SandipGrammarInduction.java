@@ -76,6 +76,7 @@ public class SandipGrammarInduction {
 
 				Scene s1 = new Scene();
 				s1.parseScene(hier_file, dist_file);
+				s1.buildSceneTree();
 				
 				System.out.println("Read Scene- " + s1.name);
 				
@@ -84,11 +85,12 @@ public class SandipGrammarInduction {
 //				scenes_map.put(s1.name, s1);
 				
 				
-				s1.buildSceneTree();
 				System.out.println("----------------------------------------------------------------------------");
 //				System.out.println(s1);
 			}
 
+		scenes.get(0).sct.compareTree(scenes.get(1).sct);
+		
 //		 System.out.println("Reading files done...");
 		 
 		 return scenes;

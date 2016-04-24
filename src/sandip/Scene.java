@@ -23,60 +23,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-class BBox{
-	
-	double x_min,y_min,z_min,x_max,y_max,z_max;
-	
-	public BBox(double x_min, double y_min, double z_min, double x_max,
-			double y_max, double z_max) {
-		super();
-		this.x_min = x_min;
-		this.y_min = y_min;
-		this.z_min = z_min;
-		this.x_max = x_max;
-		this.y_max = y_max;
-		this.z_max = z_max;
-	}
-
-	List<Double> getBBoxCenter(){
-		
-		List<Double> bbox_cent = new ArrayList<>();
-		bbox_cent.add((x_min+x_max)/2);
-		bbox_cent.add((y_min+y_max)/2);
-		bbox_cent.add((z_min+z_max)/2);
-		
-		return bbox_cent;
-	}
-	
-}
-
-class Node{
-	int scene_index;
-//	int global_index;
-	int ground_truth_label;
-    String ground_truth_label_name;
-	
-    int parent;
-    
-    List<Double> features = new ArrayList<>();
-	
-	Map<Integer,Double> distances = new HashMap<>();
-	Map<Integer,Double> normalize_distances = new HashMap<>();
-	
-	BBox node_bbox;
-	
-	List<Node> children = new ArrayList<>();
-	
-}
-
 
 public class Scene {
-	Map<Integer, Node> leaf_nodes = new HashMap<>();
-	Node tree_root;
+	Map<Integer, SceneNode> leaf_nodes = new HashMap<>();
+	SceneNode tree_root;
 	String name;
 //	List<Node> curr_nodes = new ArrayList<>();
-	Map<Integer, Node>  curr_nodes = new HashMap<>();
+	Map<Integer, SceneNode>  curr_nodes = new HashMap<>();
 	int max_index = -1;
+	
+	SceneTree sct;
 	
 	/**
 	 * 
@@ -89,7 +45,6 @@ public class Scene {
 		parseHierfile(hier_file_path);
 		parseDistfile(dist_file_path);
 		
-
 	}
 	
 	/**
@@ -101,7 +56,7 @@ public class Scene {
 	{
 		String rd_str;
 		BufferedReader br = new BufferedReader(new FileReader(new File(hier_file_path)));
-		Node curr_node = null;
+		SceneNode curr_node = null;
 		
 		//skip root id
 		br.readLine();
@@ -114,14 +69,15 @@ public class Scene {
 			{
 				//skip root = curr_node.parent !=-1
 				if(curr_node!=null && curr_node.parent !=-1){
-					max_index = (max_index<curr_node.scene_index)?curr_node.scene_index:max_index;
-					leaf_nodes.put(curr_node.scene_index, curr_node);
+					max_index = (max_index<curr_node.node_index)?curr_node.node_index:max_index;
+					curr_node.is_leaf = true;
+					leaf_nodes.put(curr_node.node_index, curr_node);
 //					curr_nodes.add(curr_node);
-					curr_nodes.put(curr_node.scene_index, curr_node);
+					curr_nodes.put(curr_node.node_index, curr_node);
 				}
 				
-				curr_node = new Node();
-				curr_node.scene_index = Integer.parseInt(rd_str.split(" ")[1]);
+				curr_node = new SceneNode();
+				curr_node.node_index = Integer.parseInt(rd_str.split(" ")[1]);
 				continue;
 			}
 			
@@ -156,10 +112,10 @@ public class Scene {
 		}
 
 		if(curr_node!=null){
-			max_index = (max_index<curr_node.scene_index)?curr_node.scene_index:max_index;
-			leaf_nodes.put(curr_node.scene_index, curr_node);
+			max_index = (max_index<curr_node.node_index)?curr_node.node_index:max_index;
+			leaf_nodes.put(curr_node.node_index, curr_node);
 //			curr_nodes.add(curr_node);
-			curr_nodes.put(curr_node.scene_index, curr_node);
+			curr_nodes.put(curr_node.node_index, curr_node);
 		}
 		
 		br.close();
@@ -192,7 +148,7 @@ public class Scene {
 		for(Integer i : node_idx_lst)
 		{
 			
-			Node curr_Node = leaf_nodes.get(i);
+			SceneNode curr_Node = leaf_nodes.get(i);
 			rd_str = br.readLine().split(" ");
 			int cnt = 0;
 			
@@ -204,8 +160,13 @@ public class Scene {
 		br.close();
 	}
 	
-	public void buildSceneTree()
+	public SceneTree buildSceneTree()
 	{
+		
+		sct = new SceneTree();
+		
+		for (int idx : curr_nodes.keySet())		sct.node_map.put(idx, curr_nodes.get(idx));
+		
 		while(curr_nodes.size() > 1)
 		{
 			double min_dist = Double.MAX_VALUE;
@@ -224,17 +185,21 @@ public class Scene {
 					}
 				}
 			}
-			mergeNodes(min_node1,min_node2);
+			SceneNode new_node = mergeNodes(min_node1,min_node2);
+			sct.node_map.put(new_node.node_index, new_node);
 		}
 		
 		tree_root = curr_nodes.get(max_index);
+		sct.root = tree_root;
 //		System.out.println("Root - " + tree_root.ground_truth_label_name);
+		
+		return sct;
 	}
 	
 	private double calculateNodeDist(int nd1, int nd2)
 	{
-		Node node1 = curr_nodes.get(nd1);
-		Node node2 = curr_nodes.get(nd2);
+		SceneNode node1 = curr_nodes.get(nd1);
+		SceneNode node2 = curr_nodes.get(nd2);
 		
 		double feature_dist = 0;
 		double spatial_dist = 0;
@@ -250,17 +215,17 @@ public class Scene {
 		return Math.sqrt(feature_dist)+Math.sqrt(spatial_dist);
 	}
 	
-	private void mergeNodes(int nd1, int nd2)
+	private SceneNode mergeNodes(int nd1, int nd2)
 	{
-		Node node1 = curr_nodes.get(nd1);
-		Node node2 = curr_nodes.get(nd2);
+		SceneNode node1 = curr_nodes.get(nd1);
+		SceneNode node2 = curr_nodes.get(nd2);
 		
-		Node curr_node = new Node();
-		curr_node.scene_index = ++max_index;
+		SceneNode curr_node = new SceneNode();
+		curr_node.node_index = ++max_index;
 		curr_node.ground_truth_label_name = node1.ground_truth_label_name + "+" + node2.ground_truth_label_name; 
 		
-		node1.parent = curr_node.scene_index;
-		node2.parent = curr_node.scene_index;
+		node1.parent = curr_node.node_index;
+		node2.parent = curr_node.node_index;
 		
 		for(int i = 0; i<node1.features.size(); i++)	
 			curr_node.features.add((node1.features.get(i)+node2.features.get(i))/2);
@@ -278,9 +243,11 @@ public class Scene {
 		curr_nodes.remove(nd1);
 		curr_nodes.remove(nd2);
 		
-		curr_nodes.put(curr_node.scene_index, curr_node);
+		curr_nodes.put(curr_node.node_index, curr_node);
 		
 		System.out.println(curr_node.ground_truth_label_name);
+		
+		return curr_node;
 		
 	}
 	
@@ -290,15 +257,15 @@ public class Scene {
 		return "";
 	}
 	
-	private void printTreeQ(Node tn) {
+	private void printTreeQ(SceneNode tn) {
 		
-		Queue<Node> q = new LinkedList<>();
+		Queue<SceneNode> q = new LinkedList<>();
 		q.add(tree_root);
 		
 		while(!q.isEmpty()){
-			Node nd = q.poll();
+			SceneNode nd = q.poll();
 			
-			for (Node ch : nd.children) {
+			for (SceneNode ch : nd.children) {
 				q.offer(ch);
 			}
 			
