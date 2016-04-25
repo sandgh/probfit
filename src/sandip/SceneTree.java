@@ -76,6 +76,9 @@ public class SceneTree {
 	List<Integer> unmapped_list = new ArrayList<>();
 	Map<Integer, Integer> mapped_map = new HashMap<>();
 	
+	//used by the greedy top-down
+	Map<Integer, Integer> curr_map = new HashMap<>();
+	Map<Integer, Integer> final_map = new HashMap<>();
 	
 	/**
 	 * This will be called before we start matching two trees
@@ -101,16 +104,27 @@ public class SceneTree {
 		t.addAllNodesToUnmappedList();
 		
 		
-		this.unmapped_list.remove((Object)root.node_index);
-		t.unmapped_list.remove((Object)t.root.node_index);		
-		mapped_map.put(root.node_index, t.root.node_index);
-		t.mapped_map.put(t.root.node_index, this.root.node_index);
-		compareNodesTopDown(this, t, match);
+//		this.unmapped_list.remove((Object)root.node_index);
+//		t.unmapped_list.remove((Object)t.root.node_index);		
+//		mapped_map.put(root.node_index, t.root.node_index);
+//		t.mapped_map.put(t.root.node_index, this.root.node_index);
+//		compareNodesTopDown(this, t, match);
 		
 //		compareNodesBottomUp(this, t, match);
 		
-		for (String str : match.keySet()) {
-			System.out.println(str + " --> " + match.get(str));
+//		for (String str : match.keySet()) {
+//			System.out.println(str + " --> " + match.get(str));
+//		}
+		
+		//greedy approach testing
+		this.curr_map.put(this.root.node_index, t.root.node_index);
+		compareNodesTopDown_greedy(this, t, match);
+		
+//		compareNodesBottomUp(this, t, match);
+		
+		for (Integer str : final_map.keySet()) {
+			System.out.println(this.node_map.get(str).ground_truth_label_name + " --> " + 
+										t.node_map.get(final_map.get(str)).ground_truth_label_name );
 		}
 		
 		return null;
@@ -222,6 +236,46 @@ public class SceneTree {
 	 * @param t2
 	 * @param match_map
 	 */
+	private void compareNodesTopDown_greedy(SceneTree t1, SceneTree t2, Map<String, String> match_map) {
+		
+		while (!curr_map.isEmpty()) {
+
+			Map<Integer, Integer> next_curr_map = new HashMap<>();
+			for (Integer i : curr_map.keySet()) {
+
+				SceneNode v1 = t1.node_map.get(i);
+				SceneNode v2 = t2.node_map.get(curr_map.get(i));
+
+				// base
+				if (v1.children.size() > 0 && v2.children.size() > 0) {
+					double diff1 = calculateNodeDist(v1.children.get(0), v2.children.get(0));
+					double diff2 = calculateNodeDist(v1.children.get(1), v2.children.get(1));
+
+					double diff3 = calculateNodeDist(v1.children.get(1), v2.children.get(0));
+					double diff4 = calculateNodeDist(v1.children.get(0), v2.children.get(1));
+
+					if ((diff1 + diff2) > (diff3 + diff4)) {
+						next_curr_map.put(v1.children.get(1).node_index, v2.children.get(0).node_index);
+						next_curr_map.put(v1.children.get(0).node_index, v2.children.get(1).node_index);
+					} else {
+						next_curr_map.put(v1.children.get(1).node_index, v2.children.get(1).node_index);
+						next_curr_map.put(v1.children.get(0).node_index, v2.children.get(0).node_index);
+					}
+				}
+				final_map.put(i, curr_map.get(i));
+			}
+			curr_map.clear();
+			for (Integer i : next_curr_map.keySet())
+				curr_map.put(i, next_curr_map.get(i));
+		}
+	}
+	
+	/**
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @param match_map
+	 */
 	private void compareNodesBottomUp(SceneTree t1, SceneTree t2, Map<String, String> match_map){
 		
 		//base condition
@@ -315,5 +369,13 @@ public class SceneTree {
 	}
 	
 	
-	
+	private double calculateNodeDist(SceneNode node1, SceneNode node2)
+	{
+		double feature_dist = 0;
+		
+		for(int i = 0; i<node1.features.size(); i++)	
+			feature_dist+=(node1.features.get(i)-node2.features.get(i))*(node1.features.get(i)-node2.features.get(i));
+		
+		return Math.sqrt(feature_dist);
+	}
 }

@@ -115,7 +115,7 @@ public class Tree_v2 {
 //		compareNodesBottomUp(this, t, match);
 		
 		for (Integer str : final_map.keySet()) {
-			System.out.println(str + " --> " + final_map.get(str));
+			System.out.println(this.node_map.get(str).node_val + " --> " + t.node_map.get(final_map.get(str)).node_val );
 		}
 		
 		return null;
