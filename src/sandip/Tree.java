@@ -13,7 +13,6 @@
 package sandip;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -258,8 +257,8 @@ public class Tree {
 				{
 						
 					if(!(mapped_map.get(t1.node_map.get(v1).parent) == t2.node_map.get(v2).parent))
-						continue;
-//						no_match = true;
+//						continue;
+						no_match = true;
 
 					t1.addToMappedList(v1, no_match?-1:v2);
 					t2.addToMappedList(v2, no_match?-1:v1);
