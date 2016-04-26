@@ -209,7 +209,8 @@ public class Scene {
 		for(int i = 0; i<node1.node_bbox.getBBoxCenter().size(); i++)	
 			spatial_dist+=(node1.node_bbox.getBBoxCenter().get(i)-node2.node_bbox.getBBoxCenter().get(i))*(node1.node_bbox.getBBoxCenter().get(i)-node2.node_bbox.getBBoxCenter().get(i));
 		
-//		System.out.println(node1.ground_truth_label_name + "-" + node2.ground_truth_label_name + " = " + 
+//		System.out.println(node1.ground_truth_label_name + "-" + node2.ground_truth_label_name + "(" + 
+//													+node1.node_index + "-" + node2.node_index + ")" +" = " + 
 //													Math.sqrt(feature_dist) + "/" + Math.sqrt(spatial_dist));
 		
 		return Math.sqrt(feature_dist)+Math.sqrt(spatial_dist);
@@ -245,7 +246,7 @@ public class Scene {
 		
 		curr_nodes.put(curr_node.node_index, curr_node);
 		
-		System.out.println(curr_node.ground_truth_label_name);
+//		System.out.println(curr_node.node_index + ". " + curr_node.ground_truth_label_name + "(" + nd1 + "+" + nd2 + ")");
 		
 		return curr_node;
 		

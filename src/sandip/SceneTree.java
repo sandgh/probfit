@@ -117,6 +117,8 @@ public class SceneTree {
 //		}
 		
 		//greedy approach testing
+		this.curr_map.clear();
+		this.final_map.clear();
 		this.curr_map.put(this.root.node_index, t.root.node_index);
 		compareNodesTopDown_greedy(this, t, match);
 		
@@ -124,7 +126,9 @@ public class SceneTree {
 		
 		for (Integer str : final_map.keySet()) {
 			System.out.println(this.node_map.get(str).ground_truth_label_name + " --> " + 
-										t.node_map.get(final_map.get(str)).ground_truth_label_name );
+										t.node_map.get(final_map.get(str)).ground_truth_label_name 
+										+ "(" + this.node_map.get(str).node_index
+										 + " - " + t.node_map.get(final_map.get(str)).node_index +")");
 		}
 		
 		return null;
